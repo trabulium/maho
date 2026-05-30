@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Maho\ApiPlatform\EventListener;
 
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use Maho\ApiPlatform\Security\PublicOperationSecurity;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -72,9 +73,9 @@ class DefaultDenyListener
             $security = null;
         }
 
-        // Public operations, no auth needed
-        // API Platform may wrap the value in quotes, so strip them before comparing
-        if ($security !== null && trim($security, '" ') === 'true') {
+        // Public operations, no auth needed. API Platform may wrap the value
+        // in quotes; the shared helper normalises that before comparing.
+        if (PublicOperationSecurity::isPublic($security)) {
             return;
         }
 
