@@ -625,12 +625,17 @@ final class ProductProvider extends \Maho\ApiPlatform\Provider
             $gcAttrs = ['giftcard_type', 'giftcard_amounts', 'giftcard_min_amount', 'giftcard_max_amount', 'allow_message', 'use_config_is_redeemable'];
             $needsLoad = false;
             foreach ($gcAttrs as $a) {
-                if (!$product->hasData($a)) { $needsLoad = true; break; }
+                if (!$product->hasData($a)) {
+                    $needsLoad = true;
+                    break;
+                }
             }
             if ($needsLoad && $product->getId()) {
                 $reload = \Mage::getModel('catalog/product')->setStoreId($product->getStoreId())->load((int) $product->getId());
                 foreach ($gcAttrs as $a) {
-                    if ($reload->hasData($a)) $product->setData($a, $reload->getData($a));
+                    if ($reload->hasData($a)) {
+                        $product->setData($a, $reload->getData($a));
+                    }
                 }
             }
             $rawType = $product->getData('giftcard_type');
@@ -659,18 +664,26 @@ final class ProductProvider extends \Maho\ApiPlatform\Provider
                 if ($decoded === false && !str_starts_with($rawAmounts, 'b:')) {
                     // CSV fallback
                     foreach (array_map('trim', explode(',', $rawAmounts)) as $piece) {
-                        if (is_numeric($piece)) $amounts[] = (float) $piece;
+                        if (is_numeric($piece)) {
+                            $amounts[] = (float) $piece;
+                        }
                     }
                 } elseif (is_array($decoded)) {
                     foreach ($decoded as $row) {
-                        if (is_array($row) && isset($row['value'])) $amounts[] = (float) $row['value'];
-                        elseif (is_numeric($row)) $amounts[] = (float) $row;
+                        if (is_array($row) && isset($row['value'])) {
+                            $amounts[] = (float) $row['value'];
+                        } elseif (is_numeric($row)) {
+                            $amounts[] = (float) $row;
+                        }
                     }
                 }
             } elseif (is_array($rawAmounts)) {
                 foreach ($rawAmounts as $row) {
-                    if (is_array($row) && isset($row['value'])) $amounts[] = (float) $row['value'];
-                    elseif (is_numeric($row)) $amounts[] = (float) $row;
+                    if (is_array($row) && isset($row['value'])) {
+                        $amounts[] = (float) $row['value'];
+                    } elseif (is_numeric($row)) {
+                        $amounts[] = (float) $row;
+                    }
                 }
             }
             sort($amounts);
