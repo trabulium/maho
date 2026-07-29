@@ -109,6 +109,16 @@ describe('Transformer Factory', function () {
             ->and($chain[1]['transformer'])->toBe('lowercase');
     });
 
+    test('parseChainString keeps option values containing "=" (e.g. UTM query strings)', function () {
+        // Only the FIRST "=" separates key from value; the rest belong to the value.
+        $chain = Maho_FeedManager_Model_Transformer::parseChainString(
+            'prepend_append:append=?utm_source=facebook&utm_medium=cpc&utm_campaign=feed',
+        );
+        expect($chain)->toHaveCount(1)
+            ->and($chain[0]['transformer'])->toBe('prepend_append')
+            ->and($chain[0]['options'])->toBe(['append' => '?utm_source=facebook&utm_medium=cpc&utm_campaign=feed']);
+    });
+
     test('buildChainString round-trips with parseChainString', function () {
         $original = 'uppercase|truncate:max_length=10,suffix=...';
         $chain = Maho_FeedManager_Model_Transformer::parseChainString($original);

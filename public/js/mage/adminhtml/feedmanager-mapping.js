@@ -324,10 +324,10 @@ const TransformerModal = {
                 const optStr = part.substring(colonIdx + 1);
                 const optPairs = optStr.split(',');
                 for (let j = 0; j < optPairs.length; j++) {
-                    const kv = optPairs[j].split('=');
-                    if (kv.length === 2) {
-                        const key = kv[0].trim();
-                        const raw = kv[1];
+                    const eqIdx = optPairs[j].indexOf('=');
+                    if (eqIdx > -1) {
+                        const key = optPairs[j].substring(0, eqIdx).trim();
+                        const raw = optPairs[j].substring(eqIdx + 1);
                         // Direction-aware trim — keep the inside edge for prepend_append.
                         let value;
                         if (code === 'prepend_append' && key === 'prepend') {
